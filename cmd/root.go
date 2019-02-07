@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/99designs/keyring"
-	analytics "github.com/segmentio/analytics-go"
 	"github.com/segmentio/aws-okta/lib"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -32,9 +31,6 @@ var (
 	mfaConfig         lib.MFAConfig
 	debug             bool
 	version           string
-	analyticsWriteKey string
-	analyticsEnabled  bool
-	analyticsClient   analytics.Client
 	username          string
 )
 
@@ -52,8 +48,6 @@ var RootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(vers string, writeKey string) {
 	version = vers
-	analyticsWriteKey = writeKey
-	analyticsEnabled = analyticsWriteKey != ""
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		switch err {
@@ -77,25 +71,9 @@ func prerun(cmd *cobra.Command, args []string) {
 		log.SetLevel(log.DebugLevel)
 	}
 
-	if analyticsEnabled {
-		// set up analytics client
-		analyticsClient, _ = analytics.NewWithConfig(analyticsWriteKey, analytics.Config{
-			BatchSize: 1,
-		})
-
-		username = os.Getenv("USER")
-		analyticsClient.Enqueue(analytics.Identify{
-			UserId: username,
-			Traits: analytics.NewTraits().
-				Set("aws-okta-version", version),
-		})
-	}
 }
 
 func postrun(cmd *cobra.Command, args []string) {
-	if analyticsEnabled && analyticsClient != nil {
-		analyticsClient.Close()
-	}
 }
 
 func init() {

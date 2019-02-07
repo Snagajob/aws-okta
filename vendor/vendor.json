@@ -275,14 +275,6 @@
 			"revisionTime": "2016-12-03T19:45:07Z"
 		},
 		{
-			"checksumSHA1": "8xpFdZVp0QVAhbq20SJEb4qTcEk=",
-			"path": "github.com/segmentio/analytics-go",
-			"revision": "4f08212e9b32c48b4a4d20997d3f90dc0b56eba8",
-			"revisionTime": "2018-03-19T16:54:24Z",
-			"version": "v3.0",
-			"versionExact": "v3.0"
-		},
-		{
 			"checksumSHA1": "jK8cjKr2eA3JiQP+T4HLjQRV5ak=",
 			"path": "github.com/segmentio/backo-go",
 			"revision": "204274ad699c0983a70203a566887f17a717fef4",
