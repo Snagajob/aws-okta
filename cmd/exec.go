@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"regexp"
 	"strings"
 	"syscall"
 	"time"
@@ -162,6 +163,14 @@ func execRun(cmd *cobra.Command, args []string) error {
 	if region, ok := profiles[profile]["region"]; ok {
 		env.Set("AWS_DEFAULT_REGION", region)
 		env.Set("AWS_REGION", region)
+	}
+
+	if role, ok := profiles[profile]["role_arn"]; ok {
+		consoleMatched, _ := regexp.MatchString("console", role)
+		if consoleMatched {
+			fmt.Printf("Cannot use console role (%s) for programmatic accesss.", role)
+			os.Exit(1)
+		}
 	}
 
 	env.Set("AWS_ACCESS_KEY_ID", creds.AccessKeyID)
